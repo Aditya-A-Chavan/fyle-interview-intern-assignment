@@ -84,10 +84,18 @@ class Assignment(db.Model):
 
         return assignment
 
+    # @classmethod
+    # def query_all(cls):
+    #     return db.session.query(cls)
+
     @classmethod
     def get_assignments_by_student(cls, student_id):
         return cls.filter(cls.student_id == student_id).all()
 
     @classmethod
     def get_assignments_by_teacher(cls):
+        return cls.query.all()
+    
+    @classmethod
+    def get_all_assignments(cls):
         return cls.query.all()
