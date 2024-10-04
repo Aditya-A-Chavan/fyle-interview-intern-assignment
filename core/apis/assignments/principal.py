@@ -1,8 +1,8 @@
-from flask import Blueprint
+from flask import Blueprint, request, jsonify
 from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
-from core.models.assignments import Assignment
+from core.models.assignments import Assignment, AssignmentStateEnum
 from core.models.teachers import Teacher
 from .schema import AssignmentSchema, AssignmentGradeSchema
 from core.apis.teachers.schema import TeacherSchema
@@ -17,3 +17,28 @@ def list_assignments(p):
     assignments = Assignment.get_all_assignments()
     assignments_dump = AssignmentSchema().dump(assignments, many=True)
     return APIResponse.respond(data=assignments_dump)
+
+
+@principal_assignments_resources.route('/assignments/grade', methods=['POST'], strict_slashes=False)
+@decorators.accept_payload
+@decorators.authenticate_principal
+def grade_assignment(p, incoming_payload) :
+    grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
+
+    assignment = Assignment.get_by_id(grade_assignment_payload.id)
+
+    if assignment.state == AssignmentStateEnum.DRAFT:
+        status_code = 400
+        return APIResponse.error(status_code)
+
+    else:
+        graded_assignment = Assignment.mark_grade(
+            _id=grade_assignment_payload.id,
+            grade=grade_assignment_payload.grade,
+            auth_principal=p
+        )
+        db.session.commit()
+        graded_assignment_dump = AssignmentSchema().dump(graded_assignment)
+        return APIResponse.respond(data=graded_assignment_dump)
+
+    # return jsonify({"assignment_id": assignment_id, "grade": grade}) 
