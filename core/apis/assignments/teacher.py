@@ -1,6 +1,7 @@
 from flask import Blueprint
 from core import db
 from core.apis import decorators
+from core.libs.assertions import assert_found, assert_valid
 from core.apis.responses import APIResponse
 from core.models.assignments import Assignment
 
@@ -25,12 +26,11 @@ def grade_assignment(p, incoming_payload):
     grade_assignment_payload = AssignmentGradeSchema().load(incoming_payload)
     
     assignment = Assignment.get_by_id(grade_assignment_payload.id)
-    
-    if assignment is None:
-        return APIResponse.error(404, message='Assignment not found')
-    
-    if p.teacher_id != assignment.teacher_id:
-        return APIResponse.error(400, message='Teacher can only grade their own assignments')
+
+
+    assert_found(assignment, 'Assignment not found')
+    assert_valid(p.teacher_id == assignment.teacher_id, 'Teacher can only grade their own assignments')
+
 
     graded_assignment = Assignment.mark_grade(
         _id=grade_assignment_payload.id,
