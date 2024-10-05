@@ -46,6 +46,10 @@ def submit_assignment(p, incoming_payload):
     """Submit an assignment"""
     submit_assignment_payload = AssignmentSubmitSchema().load(incoming_payload)
 
+    assignment = Assignment.get_by_id(submit_assignment_payload.id)
+    if assignment.state != 'DRAFT':
+        return APIResponse.error(400, message='only a draft assignment can be submitted')
+
     submitted_assignment = Assignment.submit(
         _id=submit_assignment_payload.id,
         teacher_id=submit_assignment_payload.teacher_id,

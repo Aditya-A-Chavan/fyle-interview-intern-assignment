@@ -7,5 +7,9 @@ class APIResponse(Response):
         return make_response(jsonify(data=data))
 
     @classmethod
-    def error(cls, status_code):
-        return make_response(jsonify(status_code=status_code), status_code)
+    def error(cls, status_code, message="An error occurred", error_type="FyleError"):
+        error_response = {
+            "error": error_type,
+            "message": message
+        }
+        return make_response(jsonify(error_response), status_code)
