@@ -28,8 +28,7 @@ def grade_assignment(p, incoming_payload) :
     assignment = Assignment.get_by_id(grade_assignment_payload.id)
 
     if assignment.state == AssignmentStateEnum.DRAFT:
-        status_code = 400
-        return APIResponse.error(status_code)
+        return APIResponse.error(400)
 
     else:
         graded_assignment = Assignment.mark_grade(

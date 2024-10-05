@@ -8,4 +8,4 @@ class APIResponse(Response):
 
     @classmethod
     def error(cls, status_code):
-        return make_response(jsonify(status_code=status_code))
+        return make_response(jsonify(status_code=status_code), status_code)
