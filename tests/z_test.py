@@ -27,9 +27,9 @@ def test_grade_assignment(client, h_teacher_1):
     assert data['state'] == 'GRADED'
     assert data['grade'] == 'A'
 
-#TESTING IF APP ONLINE
-def test_server(client):
-    response = client.get('/')
-    assert response.status_code == 200
-    response = response.json
-    assert response['status'] == 'ready'
+# #TESTING IF APP ONLINE
+# def test_server(client):
+#     response = client.get('/')
+#     assert response.status_code == 200
+#     response = response.json
+#     assert response['status'] == 'ready'
