@@ -5,6 +5,7 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
+RUN apt-get update && apt-get install -y gcc build-essential libffi-dev
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
