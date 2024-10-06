@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "7755:7755"
+    volumes:
+      - .:/app
+    environment:
+      - FLASK_ENV=development
+    command: ["gunicorn", "-c", "gunicorn_config.py", "core.server:app"]
+
+# Optional: Add other services like PostgreSQL, Redis, etc.
